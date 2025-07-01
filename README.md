@@ -1,53 +1,148 @@
 # Sellpy web interview
 
 Welcome to Sellpy's web interview repo!
-## Prerequisites
-
-NodeJS - if you don't already have it installed, check out [nvm](https://github.com/nvm-sh/nvm).
-
-## Getting started
-Fork the repository (see top-right button on GitHub) and clone the fork to your computer.
-### To start the backend:
-
- - Navigate to the backend folder
- - Run `npm ci`
- - Run `npm start`
-
-### To start the frontend:
-
- - Navigate to the frontend folder
- - Run `npm ci`
- - Run `npm start`
-
- A browsertab will automatically open and load the app.
-
-### Development set-up
-If you don't have a favorite editor we highly recommend [VSCode](https://code.visualstudio.com). We've also had some ESLint rules set up which will help you catch bugs etc. If you're using VSCode, install the regular [ESLint plugin](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) and you should be good to go!
-
-You can open the root folder in one workspace, or `/frontend` and `/backend` in seperate workspaces - both should work fine.
-
-Check `.nvmrc` to see what node version is required to run the project. Just run `nvm use` if you have `nvm` installed. Later versions of node might work fine as well, but probably not earlier versions.
-
-For those of you using Prettier (not a requirement), there's an .prettierrc file to ensure no unnecessary changes to the existing code. It should be picked up automatically by Prettier.
-
-## Assignment
-Your assignment is to improve this todo list application. At the moment the application is simple and can only create and remove todos.
-As is, nothing is persisted in the server. As a result all state is cleared when refreshing the page!
-Below follows one main task and 4 additional tasks. Your assignment is to complete the main task together with at least 2 out of 4 of the additional tasks.
-If you feel constrained by time (which is totally fine!), prioritize quality over quantity.
-
-### Main Task
-Persist the todo lists on the server. Persisting in a database is not required. (Simple js structures on the server is fine). If you do go for an actual DB (again not required), be sure to include instructions of how to get it up and running.
-
-### Additional tasks
-- Don't require users to press save when an item is added/edited in the todo list. (Autosave functionality)
-- Make it possible to indicate that a todo is completed.
-- Indicate that a todo list is completed if all todo items within are completed.
-- Add a date for completion to todo items. Indicate how much time is remaining or overdue.
 
 ## Submission
-Before submitting, read through all changes one last time - code quality matters!
 
-If you have developed without ESLint set up, run `npm run lint` in both `/backend` and `/frontend` and fix any errors/warnings.
+Completed tasks:
+- Main Task:
+  - Created RESTful API in the backend to provide CRUD operations for todo lists in the frontend
 
-Send a link to your forked repository to your contact at Sellpy. Don't forget to mention which tasks you completed.
+- Additional Task:
+  - Autosave function when a todo item is added or deleted
+  - Checkbox for user to cross-off a todo item as the indication of completion
+  - Documented all the changes in code
+
+## Components
+
+### TodoLists Component
+
+The `TodoLists.jsx` component serves as the main interface for managing todo lists.
+
+#### Core Functionality
+- Provides CRUD operations for todo list management
+
+#### Backend Integration
+- Connects with REST API endpoints at `http://localhost:3001/api`
+- Implements API calls for:
+  - Fetching all todo lists
+  - Creating new todo lists
+  - Updating existing todo lists
+  - Deleting todo lists
+
+#### User Interface Elements
+- **List Display**
+  - Card container with list of todo lists
+  - Icons for visual identification
+  - Empty state handling
+  
+- **Action Buttons**
+  - New List button with add icon
+  - Edit and Delete buttons for each list
+  - Tooltips for improved UX
+
+- **Dialog Modals**
+  - Create List dialog with form
+  - Rename List dialog with form
+  - Cancel/Confirm action buttons
+
+#### State Management
+- React hooks for managing component state:
+  - Todo lists data
+  - Active list selection
+  - Loading and error states
+  - Dialog visibility states
+  - Form input values
+
+#### Error Handling
+- API error catching with appropriate user feedback
+- Loading state indication during API operations
+
+### TodoListForm Component
+
+The `TodoListForm.jsx` component handles the editing interface for individual todo lists.
+
+#### Core Functionality
+- Supports creating, updating, and deleting individual todos
+- Implements todo completion tracking with visual indicators
+- Features auto-saving with debounce for improved performance
+
+#### Data Structure Enhancement
+- Upgraded todo format from simple strings to structured objects:
+  ```javascript
+  { text: "Todo text", completed: false }
+  ```
+- Backward compatibility with automatic conversion of string-based todos
+
+#### Todo Management Features
+- **Todo Creation**
+  - Add button for creating new empty todo items
+  - Sequential numbering of todos for easy reference
+  
+- **Todo Editing**
+  - Text input fields for modifying todo content
+  - Checkbox controls for marking todos as complete/incomplete
+  - Delete button for removing individual todos
+  
+- **Visual Feedback**
+  - Strikethrough styling for completed todos
+  - Grayed-out text for completed items
+  - Automatic sorting to move completed todos to the bottom
+
+#### Advanced State Management
+- Implements efficient state handling with React hooks:
+  - Tracking of todo items and their completion status
+  - Save operation states (in-progress, error)
+  - Last saved state tracking to prevent unnecessary API calls
+  
+- **Auto-save Implementation**
+  - Debounced saving to prevent API overload
+  - 1-second delay after the last change before triggering save
+  - State comparison to avoid redundant API calls
+  - Cleanup on unmount to prevent memory leaks
+
+#### User Experience Enhancements
+- **Feedback Mechanisms**
+  - "Saving..." indicator during API operations
+  - Error notifications via Snackbar component
+  - Visual differentiation of completed vs. active todos
+
+#### Code Optimization
+- useCallback for memoized function references
+- Sorted todo display with completed items at bottom
+- Efficient state updates using immutable patterns
+
+## Todo List API
+
+This backend service provides a RESTful API for managing todo lists.
+
+#### API Overview
+
+The backend implements the following endpoints:
+
+#### Todo Lists Management
+
+- `GET /api/todolists` - Retrieve all todo lists
+- `GET /api/todolists/:id` - Retrieve a specific todo list by ID
+- `POST /api/todolists` - Create a new todo list
+- `PUT /api/todolists/:id` - Update an existing todo list
+- `DELETE /api/todolists/:id` - Delete a todo list
+
+#### Data Structure
+
+Todo lists are stored in-memory with the following structure:
+
+```javascript
+{
+  "id": "0000000001",
+  "title": "First List",
+  "todos": ["First todo of first list!"]
+}
+```
+
+### Implementation Details
+
+- Uses in-memory storage (would be replaced with a database later on)
+- Implements CRUD operations for todo lists
+
+
